@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import tn.spring.Repository.ProductRepository;
 import tn.spring.entity.Product;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements IProductService {
 
 	@Autowired
@@ -21,11 +23,7 @@ public class ProductServiceImpl implements IProductService {
 	}
 	@Override
 	public Product editProduct(Product p) {
-		Product product = productRepository.findById(p.getId_product()).get();
-		product.setTitle(p.getTitle());
-		product.setPrice(p.getPrice());
-		product.setQuantity(p.getQuantity());
-		return productRepository.save(product);
+		return productRepository.save(p);
 	}
 	@Override
 	public void deleteProduct(Long idProduct) {
@@ -34,7 +32,7 @@ public class ProductServiceImpl implements IProductService {
 		if (product.isPresent()) {
 			productRepository.deleteById(idProduct);
 		} else {
-			System.out.println("No Product record exist for given id");
+			log.info("No Product record exist for given id");
 		}
 
 	}
