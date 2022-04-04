@@ -25,28 +25,24 @@ public class ProductRestController {
 
 	// http://localhost:8081/all-products
 	@GetMapping("/all-Products")
-	@ResponseBody
 	public List<Product> getProducts() {
 		return productService.retrieveAll();
 	}
 
 	// http://localhost:8081/add-Product
 	@PostMapping("/add-Product")
-	@ResponseBody
 	public Product addProduct(@RequestBody Product p) {
 		return productService.addProduct(p);
 	}
 	
 	// http://localhost:8081/edit-Product
 	@PutMapping("/edit-Product")
-	@ResponseBody
 	public Product editProduct(@RequestBody Product p) {
 		return productService.editProduct(p);
 	}
 
 	// http://localhost:8081/delet-Product/id
 		@DeleteMapping("/delete-Product/{idProduct}")
-		@ResponseBody
 		public void deleteProduct(@PathVariable("idProduct") Long id) {
 			 productService.deleteProduct(id);
 		}
