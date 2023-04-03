@@ -2,6 +2,8 @@ package tn.spring.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,29 +12,47 @@ import tn.spring.Repository.ProductRepository;
 import tn.spring.entity.Product;
 
 @Service
+@AllArgsConstructor
 @Slf4j
 public class ProductServiceImpl implements IProductService {
 
-	@Autowired
-	ProductRepository productRepository;
+	private final ProductRepository productRepository;
 	
 	@Override
 	public Product addProduct(Product p) {
-		return productRepository.save(p);
+		if (p.getTitle() == null || p.getTitle().isEmpty()) {
+			throw new IllegalArgumentException("Product title cannot be empty");
+		}
+		try {
+			return productRepository.save(p);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to add product", e);
+		}
 	}
+
 	@Override
-	public Product editProduct(Product p) {
-		return productRepository.save(p);
+	public Product editProduct(Product p)  throws RuntimeException {
+
+		if (p.getId_product() == null) {
+			throw new IllegalArgumentException("Product ID cannot be null");
+		}
+		if (p.getTitle() == null || p.getTitle().isEmpty()) {
+			throw new IllegalArgumentException("Product title cannot be empty");
+		}
+		try {
+			return productRepository.save(p);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to update product", e);
+		}
 	}
 	@Override
 	public void deleteProduct(Long idProduct) {
 		Optional<Product> product = productRepository.findById(idProduct);
 
-		if (product.isPresent()) {
-			productRepository.deleteById(idProduct);
-		} else {
-			log.info("No Product record exist for given id");
-		}
+		product.ifPresent(p -> {
+			productRepository.delete(p);
+			log.info("Product with id " + idProduct + " has been deleted");
+		});
 
 	}
 	@Override
